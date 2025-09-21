@@ -2,9 +2,10 @@ import * as React from "react";
 
 interface EmailTemplateProps {
   userName: string;
+  otp: string;
 }
 
-export function EmailTemplate({ userName }: EmailTemplateProps) {
+export default function EmailTemplate({ userName, otp }: EmailTemplateProps) {
   return (
     <div
       style={{
@@ -48,7 +49,8 @@ export function EmailTemplate({ userName }: EmailTemplateProps) {
             }}
           >
             We're excited to have you on board! Thank you for joining us. You’re
-            now part of a community where innovation meets simplicity.
+            now part of a community where innovation meets simplicity. use this{" "}
+            {otp} for emailverification at mysteryApplication.
           </p>
           <p
             style={{
