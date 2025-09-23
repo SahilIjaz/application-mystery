@@ -7,15 +7,20 @@ import { sendVerifictionEmail } from "@/helpers/sendVerificationOTP";
 import { verifySchema } from "@/schemas/verifySchema";
 
 export async function POST(request: Request) {
-  dbConnect();
-
+  console.log("Before connecting to db");
+  await dbConnect();
+  console.log("DB connected successfuly.");
   try {
     const { userName, email, password } = await request.json();
-
+    console.log("Data fetched : ", { email, userName, password });
     const existingUserWithVerifiedUserName = await UserModel.findOne({
       userName,
       isVerified: true,
     });
+    console.log(
+      "EXISTING USER WITH VERIFIED USER ",
+      existingUserWithVerifiedUserName
+    );
     const verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
     if (existingUserWithVerifiedUserName) {
       return Response.json(
@@ -30,7 +35,7 @@ export async function POST(request: Request) {
     }
 
     const userWithEmaail = await UserModel.findOne({ email });
-
+    console.log("user with email : ", userWithEmaail);
     if (userWithEmaail) {
       //   true;
       if (userWithEmaail.isVerified) {
@@ -42,6 +47,7 @@ export async function POST(request: Request) {
           { status: 400 }
         );
       } else {
+        console.log("user with emailwas not found ");
         const hashedPassword = await bcrypt.hash(password, 10);
         userWithEmaail.password = hashedPassword;
         userWithEmaail.verifyCode = verifyCode;
@@ -49,6 +55,7 @@ export async function POST(request: Request) {
         await userWithEmaail.save();
       }
     } else {
+      console.log("Hashg the password");
       const hashedPassword = await bcrypt.hash(password, 10);
       const expiryDate = new Date();
       expiryDate.setHours(expiryDate.getHours() + 1);
@@ -63,7 +70,7 @@ export async function POST(request: Request) {
         messages: [],
         isAceptingMessages: true,
       });
-
+      console.log("new user is : ", newUser);
       await newUser.save();
     }
 
@@ -72,7 +79,7 @@ export async function POST(request: Request) {
       userName,
       verifyCode
     );
-
+    console.log("Emailresponse is : ", emailresponse);
     if (!emailresponse.success) {
       return Response.json(
         {
