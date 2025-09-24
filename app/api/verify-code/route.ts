@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod"
 import { UserModel } from "@/models/User";
 import dbConnect from "@/lib/dbConnect";
 
