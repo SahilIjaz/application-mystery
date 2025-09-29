@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { useDebounceValue } from "usehooks-ts";
+import { useDebounceCallback } from "usehooks-ts";
 import { signupSchema } from "@/schemas/signUpSchema";
 import axios, { AxiosError } from "axios";
 import { APIResponse } from "@/types/APIResponse";
@@ -27,7 +27,7 @@ const Page = () => {
   const [isUserNameChecking, setIsUserNameChecking] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const debouncedUserName = useDebounceValue(userName, 300);
+  const debounced = useDebounceCallback(setUserName, 300);
   const router = useRouter();
 
   const form = useForm({
@@ -41,13 +41,13 @@ const Page = () => {
 
   useEffect(() => {
     const checkUserNameUnique = async () => {
-      if (debouncedUserName) {
+      if (userName) {
         setIsUserNameChecking(true);
         setUserNameMessage("");
 
         try {
           const response = await axios.get(
-            `/api/username-check-unique?userName=${debouncedUserName}`
+            `/api/username-check-unique?userName=${userName}`
           );
           setUserNameMessage(response.data.message);
         } catch (error) {
@@ -61,7 +61,7 @@ const Page = () => {
       }
     };
     checkUserNameUnique();
-  }, [debouncedUserName]);
+  }, [userName]);
 
   const onSubmit = async (data: z.infer<typeof signupSchema>) => {
     setIsSubmitting(true);
@@ -108,7 +108,7 @@ const Page = () => {
                       onChange={(e) => {
                         const value = e.target.value;
                         field.onChange(value);
-                        setUserName(value);
+                        debounced(value);
                       }}
                       className="w-full border rounded px-3 py-2"
                     />
