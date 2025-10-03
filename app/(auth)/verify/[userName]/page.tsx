@@ -74,6 +74,7 @@ const VerifyAccount = () => {
                     <input
                       placeholder="Enter code"
                       {...field}
+                      value={field.value || ""}
                       disabled={loading}
                     />
                   </FormControl>
