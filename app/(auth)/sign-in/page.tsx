@@ -21,6 +21,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { signInSchema } from "@/schemas/signInSchema";
+import { signIn } from "next-auth/react";
 
 const Page = () => {
 
@@ -30,9 +31,8 @@ const Page = () => {
     const router = useRouter();
 
     const form = useForm({
-        resolver: zodResolver(signupSchema),
+        resolver: zodResolver(signInSchema),
         defaultValues: {
-            userName: "",
             email: "",
             password: "",
         },
@@ -40,21 +40,20 @@ const Page = () => {
 
 
     const onSubmit = async (data: z.infer<typeof signInSchema>) => {
-        setIsSubmitting(true);
-        try {
-            const response = await axios.post<APIResponse>("/api/sign-up", data);
-            toast("Success", {
-                description: response.data.message,
+
+        const result = await signIn("credentials", {
+            redirect: false,
+            email: data.email,
+            password: data.password,
+        });
+        if (result?.error) {
+            toast("error", {
+                description: result.error,
             });
-            // router.replace(`/verify/${userName}`);
-        } catch (error) {
-            const axiosError = error as AxiosError<APIResponse>;
-            // setUserNameMessage(
-            //     axiosError.response?.data.message ?? "Error signing up."
-            // );
-            toast.error(`Sign-up failed: ${axiosError}`);
-        } finally {
-            setIsSubmitting(false);
+        }
+
+        if (result?.url) {
+            router.replace('/dashboard')
         }
     };
 
@@ -65,13 +64,13 @@ const Page = () => {
                     <h1 className="text-4xl font-extrabold tracking-tight ld:text-5xl mb-6">
                         Join Mystery Message by SI
                     </h1>
-                    <p className="mb-4">Sign-up to start your anonymous journey.</p>
+                    <p className="mb-4">Sign-in to start your anonymous journey.</p>
                 </div>
 
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                         {/* Username */}
-                        <FormField
+                        {/* <FormField
                             control={form.control}
                             name="userName"
                             render={({ field }) => (
@@ -95,7 +94,7 @@ const Page = () => {
                                     <FormMessage />
                                 </FormItem>
                             )}
-                        />
+                        /> */}
 
                         {/* Email */}
                         <FormField
@@ -103,10 +102,10 @@ const Page = () => {
                             name="email"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Email</FormLabel>
+                                    <FormLabel>Email/UserNAme</FormLabel>
                                     <FormControl>
                                         <input
-                                            placeholder="Enter your email"
+                                            placeholder="email/userName"
                                             {...field}
                                             className="w-full border rounded px-3 py-2"
                                         />

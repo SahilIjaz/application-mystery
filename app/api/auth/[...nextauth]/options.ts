@@ -3,7 +3,6 @@ import { UserModel } from "@/models/User";
 import bcrypt from "bcryptjs";
 import dbConnect from "@/lib/dbConnect";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { email } from "zod";
 import { use } from "react";
 
 export const authOptions: NextAuthOptions = {
