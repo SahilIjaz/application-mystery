@@ -136,7 +136,7 @@ const Page = () => {
                     />
                   </FormControl>
                   <FormDescription>
-                    This is your public display name.
+
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -159,7 +159,7 @@ const Page = () => {
                     />
                   </FormControl>
                   <FormDescription>
-                    This is your public display name.
+
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
