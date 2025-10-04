@@ -3,7 +3,6 @@ import { UserModel } from "@/models/User";
 
 import { getServerSession } from "next-auth";
 import NextAuth from "next-auth";
-
 import { User } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/options";
 import { fail } from "assert";
