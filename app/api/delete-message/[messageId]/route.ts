@@ -8,7 +8,6 @@ import { fail } from "assert";
 import { acceptingMessageSchema } from "@/schemas/acceptingMessageSchema";
 import mongoose from "mongoose";
 
-
 export async function Delete(request: Request, { params }: { params: { messageId: string } }) {
     const { messageId } = params;
     await dbConnect();
