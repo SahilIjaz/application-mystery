@@ -30,10 +30,19 @@ export async function Delete(request: Request, { params }: { params: { messageId
     const userId = new mongoose.Types.ObjectId(user._id);
 
     try {
-        await UserModel.updateOne(
+        const updatedMessage = await UserModel.updateOne(
             { _id: userId },
             { $pull: { messages: { _id: new mongoose.Types.ObjectId(messageId) } } }
         );
+        if (updatedMessage.modifiedCount === 0) {
+            return Response.json(
+                {
+                    message: "Message not found.",
+                    success: false,
+                },
+                { status: 404 }
+            );
+        }
 
         return Response.json(
             {
@@ -43,6 +52,12 @@ export async function Delete(request: Request, { params }: { params: { messageId
             { status: 200 }
         );
     } catch (error) {
-
+        return Response.json(
+            {
+                message: "Internal server error.",
+                success: false,
+            },
+            { status: 500 }
+        );
     }
 }
