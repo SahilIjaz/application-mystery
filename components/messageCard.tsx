@@ -32,12 +32,12 @@ type MessageDeleteProps = {
     onMessageDelete: (messageId: string) => void
 }
 
-const messageCard = ({ message: onMessageDelete }: MessageDeleteProps) => {
+const messageCard = ({ message, onMessageDelete }: MessageDeleteProps) => {
     const onDeleteHandle = async () => {
         try {
             const deletedMessage = await axios.delete(`/api/delete-message/${message._id}`);
             toast(deletedMessage.data.message);
-            onMessageDelete(message._id); 
+            onMessageDelete(message._id as string);
         } catch (error) {
             console.error('Error deleting message:', error);
         }
